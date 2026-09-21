@@ -125,45 +125,46 @@
         <button id="share-btn" onclick="shareResult()">결과 복사하기 (SNS 공유)</button>
     </div>
 
+    <!-- 가상 키보드 (자모음 입력 시 실시간 한글 조합) -->
     <div id="keyboard">
         <div class="keyboard-row">
-            <button class="key" onclick="handleVirtualKey('ㅂ')">ㅂ</button>
-            <button class="key" onclick="handleVirtualKey('ㅈ')">ㅈ</button>
-            <button class="key" onclick="handleVirtualKey('ㄷ')">ㄷ</button>
-            <button class="key" onclick="handleVirtualKey('ㄱ')">ㄱ</button>
-            <button class="key" onclick="handleVirtualKey('ㅅ')">ㅅ</button>
-            <button class="key" onclick="handleVirtualKey('ㅛ')">ㅛ</button>
-            <button class="key" onclick="handleVirtualKey('ㅕ')">ㅕ</button>
-            <button class="key" onclick="handleVirtualKey('ㅑ')">ㅑ</button>
-            <button class="key" onclick="handleVirtualKey('ㅐ')">ㅐ</button>
-            <button class="key" onclick="handleVirtualKey('ㅔ')">ㅔ</button>
+            <button class="key" onclick="inputJamo('ㅂ')">ㅂ</button>
+            <button class="key" onclick="inputJamo('ㅈ')">ㅈ</button>
+            <button class="key" onclick="inputJamo('ㄷ')">ㄷ</button>
+            <button class="key" onclick="inputJamo('ㄱ')">ㄱ</button>
+            <button class="key" onclick="inputJamo('ㅅ')">ㅅ</button>
+            <button class="key" onclick="inputJamo('ㅛ')">ㅛ</button>
+            <button class="key" onclick="inputJamo('ㅕ')">ㅕ</button>
+            <button class="key" onclick="inputJamo('ㅑ')">ㅑ</button>
+            <button class="key" onclick="inputJamo('ㅐ')">ㅐ</button>
+            <button class="key" onclick="inputJamo('ㅔ')">ㅔ</button>
         </div>
         <div class="keyboard-row">
-            <button class="key" onclick="handleVirtualKey('ㅁ')">ㅁ</button>
-            <button class="key" onclick="handleVirtualKey('ㄴ')">ㄴ</button>
-            <button class="key" onclick="handleVirtualKey('ㅇ')">ㅇ</button>
-            <button class="key" onclick="handleVirtualKey('ㄹ')">ㄹ</button>
-            <button class="key" onclick="handleVirtualKey('ㅎ')">ㅎ</button>
-            <button class="key" onclick="handleVirtualKey('ㅗ')">ㅗ</button>
-            <button class="key" onclick="handleVirtualKey('ㅓ')">ㅓ</button>
-            <button class="key" onclick="handleVirtualKey('ㅏ')">ㅏ</button>
-            <button class="key" onclick="handleVirtualKey('ㅣ')">ㅣ</button>
+            <button class="key" onclick="inputJamo('ㅁ')">ㅁ</button>
+            <button class="key" onclick="inputJamo('ㄴ')">ㄴ</button>
+            <button class="key" onclick="inputJamo('ㅇ')">ㅇ</button>
+            <button class="key" onclick="inputJamo('ㄹ')">ㄹ</button>
+            <button class="key" onclick="inputJamo('ㅎ')">ㅎ</button>
+            <button class="key" onclick="inputJamo('ㅗ')">ㅗ</button>
+            <button class="key" onclick="inputJamo('ㅓ')">ㅓ</button>
+            <button class="key" onclick="inputJamo('ㅏ')">ㅏ</button>
+            <button class="key" onclick="inputJamo('ㅣ')">ㅣ</button>
         </div>
         <div class="keyboard-row">
             <button class="key wide" onclick="handleEnter()">입력</button>
-            <button class="key" onclick="handleVirtualKey('ㅋ')">ㅋ</button>
-            <button class="key" onclick="handleVirtualKey('ㅌ')">ㅌ</button>
-            <button class="key" onclick="handleVirtualKey('ㅊ')">ㅊ</button>
-            <button class="key" onclick="handleVirtualKey('ㅍ')">ㅍ</button>
-            <button class="key" onclick="handleVirtualKey→('ㅠ')">ㅠ</button>
-            <button class="key" onclick="handleVirtualKey('ㅜ')">ㅜ</button>
-            <button class="key" onclick="handleVirtualKey('ㅡ')">ㅡ</button>
+            <button class="key" onclick="inputJamo('ㅋ')">ㅋ</button>
+            <button class="key" onclick="inputJamo('ㅌ')">ㅌ</button>
+            <button class="key" onclick="inputJamo('ㅊ')">ㅊ</button>
+            <button class="key" onclick="inputJamo('ㅍ')">ㅍ</button>
+            <button class="key" onclick="inputJamo('ㅠ')">ㅠ</button>
+            <button class="key" onclick="inputJamo('ㅜ')">ㅜ</button>
+            <button class="key" onclick="inputJamo('ㅡ')">ㅡ</button>
             <button class="key wide" onclick="handleBackspace()">지우기</button>
         </div>
     </div>
 
     <script>
-        const ANSWER = "오렌지주스"; // 5글자 정답 설정
+        const ANSWER = "오렌지주스"; // 5글자 정답
         const WORD_LENGTH = 5;
         const MAX_ROWS = 6;
         
@@ -173,7 +174,27 @@
         let isGameOver = false;
         let guessHistory = [];
 
-        // 보드판 동적 생성
+        // 한글 오토마타 (자음+모음 조합 엔진) 상태 변수
+        let currentCho = -1;
+        let currentJung = -1;
+        let currentJong = -1;
+
+        const CHOSUNG = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+        const JUNGSUNG = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
+        const JONGSUNG = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+        const CHO_MAP = {'ㄱ':0, 'ㄲ':1, 'ㄴ':2, 'ㄷ':3, 'ㄸ':4, 'ㄹ':5, 'ㅁ':6, 'ㅂ':7, 'ㅃ':8, 'ㅅ':9, 'ㅆ':10, 'ㅇ':11, 'ㅈ':12, 'ㅉ':13, 'ㅊ':14, 'ㅋ':15, 'ㅌ':16, 'ㅍ':17, 'ㅎ':18};
+        const JUNG_MAP = {'ㅏ':0, 'ㅐ':1, 'ㅑ':2, 'ㅒ':3, 'ㅓ':4, 'ㅔ':5, 'ㅕ':6, 'ㅖ':7, 'ㅗ':8, 'ㅛ':12, 'ㅜ':13, 'ㅠ':17, 'ㅡ':18, 'ㅣ':20};
+        const JONG_MAP = {'ㄱ':1, 'ㄴ':4, 'ㄷ':7, 'ㄹ':8, 'ㅁ':16, 'ㅂ':17, 'ㅅ':19, 'ㅇ':21, 'ㅈ':22, 'ㅊ':23, 'ㅋ':24, 'ㅌ':25, 'ㅍ':26, 'ㅎ':27};
+
+        // 복합 모음 조합표
+        const JUNG_COMBO = {
+            'ㅗ': {'ㅏ': 'ㅘ', 'ㅐ': 'ㅙ', 'ㅣ': 'ㅚ'},
+            'ㅜ': {'ㅓ': 'ㅝ', 'ㅔ': 'ㅞ', 'ㅣ': 'ㅟ'},
+            'ㅡ': {'ㅣ': 'ㅢ'}
+        };
+
+        // 보드판 생성
         const board = document.getElementById("board");
         for (let r = 0; r < MAX_ROWS; r++) {
             let row = document.createElement("div");
@@ -187,31 +208,166 @@
             board.appendChild(row);
         }
 
-        // 완성된 글자 하나씩 입력 처리 함수
-        function addLetter(char) {
-            if (isGameOver || currentTile >= WORD_LENGTH) return;
-            boardState[currentRow][currentTile] = char;
+        // 완성된 글자 계산
+        function getCombinedChar() {
+            if (currentCho !== -1 && currentJung === -1 && currentJong === -1) {
+                return CHOSUNG[currentCho];
+            }
+            if (currentCho === -1 && currentJung !== -1 && currentJong === -1) {
+                return JUNGSUNG[currentJung];
+            }
+            if (currentCho !== -1 && currentJung !== -1) {
+                let choIdx = currentCho;
+                let jungIdx = currentJung;
+                let jongIdx = currentJong === -1 ? 0 : currentJong;
+                let code = 44032 + (choIdx * 588) + (jungIdx * 28) + jongIdx;
+                return String.fromCharCode(code);
+            }
+            return "";
+        }
+
+        function updateCurrentTileUI() {
+            if (currentTile >= WORD_LENGTH) return;
             let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
-            tile.textContent = char;
-            tile.classList.add("filled");
-            currentTile++;
+            let text = getCombinedChar();
+            tile.textContent = text;
+            if (text !== "") {
+                tile.classList.add("filled");
+                boardState[currentRow][currentTile] = text;
+            } else {
+                tile.classList.remove("filled");
+                boardState[currentRow][currentTile] = "";
+            }
         }
 
-        function handleVirtualKey(char) {
-            addLetter(char);
+        // 자모음 입력 처리 (오토마타)
+        function inputJamo(char) {
+            if (isGameOver) return;
+
+            // 1. 초성 입력 단계
+            if (currentCho === -1 && currentJung === -1 && currentJong === -1) {
+                if (CHO_MAP[char] !== undefined) {
+                    currentCho = CHO_MAP[char];
+                    updateCurrentTileUI();
+                } else if (JUNG_MAP[char] !== undefined) {
+                    currentJung = JUNG_MAP[char];
+                    updateCurrentTileUI();
+                }
+            } 
+            // 2. 초성만 있는 상태
+            else if (currentCho !== -1 && currentJung === -1 && currentJong === -1) {
+                if (JUNG_MAP[char] !== undefined) {
+                    currentJung = JUNG_MAP[char];
+                    updateCurrentTileUI();
+                } else if (CHO_MAP[char] !== undefined) {
+                    // 글자 완성 후 다음 칸으로 이동하고 새 초성 시작
+                    commitLetter();
+                    currentCho = CHO_MAP[char];
+                    updateCurrentTileUI();
+                }
+            }
+            // 3. 초성 + 중성 있는 상태
+            else if (currentCho !== -1 && currentJung !== -1 && currentJong === -1) {
+                let jungChar = JUNGSUNG[currentJung];
+                if (JUNG_COMBO[jungChar] && JUNG_COMBO[jungChar][char]) {
+                    // 복합 모음 결합 (예: ㅗ + ㅏ = ㅘ)
+                    let combined = JUNG_COMBO[jungChar][char];
+                    currentJung = JUNG_MAP[combined];
+                    updateCurrentTileUI();
+                } else if (JONG_MAP[char] !== undefined) {
+                    // 받침(종성) 입력
+                    currentJong = JONG_MAP[char];
+                    updateCurrentTileUI();
+                } else if (CHO_MAP[char] !== undefined) {
+                    // 기존 글자 확정 후 새 글자 초성
+                    commitLetter();
+                    currentCho = CHO_MAP[char];
+                    updateCurrentTileUI();
+                } else if (JUNG_MAP[char] !== undefined) {
+                    // 모음이 또 들어오면 현재 글자 확정 후 새 글자 중성
+                    commitLetter();
+                    currentJung = JUNG_MAP[char];
+                    updateCurrentTileUI();
+                }
+            }
+            // 4. 초성 + 중성 + 종성 있는 상태
+            else if (currentCho !== -1 && currentJung !== -1 && currentJong !== -1) {
+                if (CHO_MAP[char] !== undefined) {
+                    commitLetter();
+                    currentCho = CHO_MAP[char];
+                    updateCurrentTileUI();
+                } else if (JUNG_MAP[char] !== undefined) {
+                    // 종성이 다음 글자의 초성으로 넘어가는 처리
+                    let jongChar = JONGSUNG[currentJong];
+                    // 간단 분리: 종성을 끊고 새 글자 중성으로
+                    currentJong = -1;
+                    commitLetter();
+                    currentJung = JUNG_MAP[char];
+                    updateCurrentTileUI();
+                } else {
+                    commitLetter();
+                    inputJamo(char);
+                }
+            }
         }
 
+        // 현재 한 글자 완성 확정
+        function commitLetter() {
+            let text = getCombinedChar();
+            if (text !== "") {
+                boardState[currentRow][currentTile] = text;
+                currentTile++;
+                currentCho = -1;
+                currentJung = -1;
+                currentJong = -1;
+            }
+        }
+
+        // 지우기 버튼
         function handleBackspace() {
-            if (isGameOver || currentTile <= 0) return;
-            currentTile--;
-            boardState[currentRow][currentTile] = "";
-            let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
-            tile.textContent = "";
-            tile.classList.remove("filled");
+            if (isGameOver) return;
+
+            // 현재 조합 중인 글자가 있다면 자모음 단위로 지우기
+            if (currentJong !== -1) {
+                currentJong = -1;
+                updateCurrentTileUI();
+                return;
+            }
+            if (currentJung !== -1) {
+                currentJung = -1;
+                updateCurrentTileUI();
+                return;
+            }
+            if (currentCho !== -1) {
+                currentCho = -1;
+                updateCurrentTileUI();
+                return;
+            }
+
+            // 이미 칸이 넘어갔다면 이전 칸으로 돌아가서 지우기
+            if (currentTile > 0) {
+                currentTile--;
+                boardState[currentRow][currentTile] = "";
+                let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
+                tile.textContent = "";
+                tile.classList.remove("filled");
+            }
         }
 
+        // 입력(Enter) 버튼
         function handleEnter() {
             if (isGameOver) return;
+            
+            // 마지막 글자가 조합 중이면 확정 처리
+            let text = getCombinedChar();
+            if (text !== "" && currentTile < WORD_LENGTH) {
+                boardState[currentRow][currentTile] = text;
+                currentTile++;
+                currentCho = -1;
+                currentJung = -1;
+                currentJong = -1;
+            }
+
             if (currentTile < WORD_LENGTH) {
                 showMessage("단어의 글자 수가 부족합니다!");
                 return;
@@ -223,7 +379,6 @@
             let answerArr = ANSWER.split("");
             let rowResult = Array(WORD_LENGTH).fill("absent");
             
-            // 1차: 정확한 위치 (초록색) 체크
             for (let i = 0; i < WORD_LENGTH; i++) {
                 if (currentWord[i] === answerArr[i]) {
                     rowResult[i] = "correct";
@@ -231,7 +386,6 @@
                 }
             }
 
-            // 2차: 포함된 글자 (노란색) 체크
             for (let i = 0; i < WORD_LENGTH; i++) {
                 if (rowResult[i] === "correct") continue;
                 let index = answerArr.indexOf(currentWord[i]);
@@ -241,7 +395,6 @@
                 }
             }
 
-            // UI에 색상 반영
             for (let i = 0; i < WORD_LENGTH; i++) {
                 let tile = document.getElementById(`tile-${currentRow}-${i}`);
                 tile.classList.add(rowResult[i]);
@@ -255,6 +408,9 @@
 
             currentRow++;
             currentTile = 0;
+            currentCho = -1;
+            currentJung = -1;
+            currentJong = -1;
 
             if (currentRow === MAX_ROWS) {
                 showMessage(`게임 오버! 정답은 [ ${ANSWER} ] 입니다.`);
@@ -274,7 +430,7 @@
             document.getElementById("share-container").style.display = "block";
         }
 
-        // 물리 키보드 입력 지원 (한글 자음/모음 및 영어 키 대응)
+        // 물리 키보드 대응 (영어 자판 매핑 포함)
         const koreanMap = {
             'q': 'ㅂ', 'Q': 'ㅃ', 'w': 'ㅈ', 'W': 'ㅉ', 'e': 'ㄷ', 'E': 'ㄸ', 'r': 'ㄱ', 'R': 'ㄲ', 't': 'ㅅ', 'T': 'ㅆ',
             'y': 'ㅛ', 'u': 'ㅕ', 'i': 'ㅑ', 'o': 'ㅐ', 'O': 'ㅒ', 'p': 'ㅔ', 'P': 'ㅖ',
@@ -291,7 +447,7 @@
             } else if (e.key === 'Backspace') {
                 handleBackspace();
             } else if (koreanMap[e.key]) {
-                addLetter(koreanMap[e.key]);
+                inputJamo(koreanMap[e.key]);
             }
         });
 
