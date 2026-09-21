@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>미니 워들 게임 (한/영 전환 가능)</title>
+    <title>미니 워들 게임 (한/영 전체 키보드)</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -15,7 +15,7 @@
             justify-content: space-between;
             height: 100vh;
             margin: 0;
-            padding: 10px;
+            padding: 5px;
             box-sizing: border-box;
         }
         header {
@@ -23,15 +23,15 @@
             border-bottom: 1px solid #3a3a3c;
             width: 100%;
             max-width: 500px;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
-        h1 { margin: 5px 0; font-size: 24px; letter-spacing: 2px; }
+        h1 { margin: 5px 0; font-size: 22px; letter-spacing: 2px; }
         
         #board {
             display: grid;
             grid-template-rows: repeat(6, 1fr);
             grid-gap: 5px;
-            padding: 10px;
+            padding: 5px;
             box-sizing: border-box;
         }
         .row {
@@ -40,13 +40,13 @@
             grid-gap: 5px;
         }
         .tile {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border: 2px solid #3a3a3c;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             user-select: none;
             background-color: #121213;
@@ -60,32 +60,31 @@
         #keyboard {
             width: 100%;
             max-width: 500px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .keyboard-row {
             display: flex;
             justify-content: center;
-            gap: 4px;
-            margin-bottom: 8px;
+            gap: 3px;
+            margin-bottom: 5px;
         }
         button.key {
             background-color: #818384;
             color: white;
             border: none;
             border-radius: 4px;
-            padding: 14px 0;
+            padding: 10px 0;
             flex: 1;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
             user-select: none;
         }
-        button.key.wide { flex: 1.5; }
-        button.key.lang-btn { background-color: #565758; color: #f5f6f8; }
+        button.key.wide { flex: 1.5; font-size: 11px; }
 
         #message {
             position: fixed;
-            top: 60px;
+            top: 50px;
             background-color: white;
             color: black;
             padding: 10px 20px;
@@ -97,15 +96,15 @@
         
         #share-container {
             display: none;
-            margin-top: 15px;
+            margin-top: 10px;
             text-align: center;
         }
         #share-btn {
             background-color: #538d4e;
             color: white;
             border: none;
-            padding: 12px 24px;
-            font-size: 16px;
+            padding: 10px 20px;
+            font-size: 14px;
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
@@ -116,7 +115,7 @@
 
     <header>
         <h1>WORDLE</h1>
-        <div id="sub-title">5글자 단어를 맞추세요 (한글/영문 겸용)</div>
+        <div id="sub-title" style="font-size: 12px;">5글자 단어 맞추기 (한/영 겸용)</div>
     </header>
 
     <div id="message"></div>
@@ -127,12 +126,84 @@
         <button id="share-btn" onclick="shareResult()">결과 복사하기 (SNS 공유)</button>
     </div>
 
-    <!-- 가상 키보드 영역 (동적으로 한/영 변환됨) -->
-    <div id="keyboard"></div>
+    <!-- 하단 가상 키보드 (영어 알파벳 + 한글 자모음 전부 포함) -->
+    <div id="keyboard">
+        <!-- 영어 첫째 줄 -->
+        <div class="keyboard-row">
+            <button class="key" onclick="handleInput('Q')">Q</button>
+            <button class="key" onclick="handleInput('W')">W</button>
+            <button class="key" onclick="handleInput('E')">E</button>
+            <button class="key" onclick="handleInput('R')">R</button>
+            <button class="key" onclick="handleInput('T')">T</button>
+            <button class="key" onclick="handleInput('Y')">Y</button>
+            <button class="key" onclick="handleInput('U')">U</button>
+            <button class="key" onclick="handleInput('I')">I</button>
+            <button class="key" onclick="handleInput('O')">O</button>
+            <button class="key" onclick="handleInput('P')">P</button>
+        </div>
+        <!-- 영어 둘째 줄 -->
+        <div class="keyboard-row">
+            <button class="key" onclick="handleInput('A')">A</button>
+            <button class="key" onclick="handleInput('S')">S</button>
+            <button class="key" onclick="handleInput('D')">D</button>
+            <button class="key" onclick="handleInput('F')">F</button>
+            <button class="key" onclick="handleInput('G')">G</button>
+            <button class="key" onclick="handleInput('H')">H</button>
+            <button class="key" onclick="handleInput('J')">J</button>
+            <button class="key" onclick="handleInput('K')">K</button>
+            <button class="key" onclick="handleInput('L')">L</button>
+        </div>
+        <!-- 영어 셋째 줄 + 제어 -->
+        <div class="keyboard-row">
+            <button class="key" onclick="handleInput('Z')">Z</button>
+            <button class="key" onclick="handleInput('X')">X</button>
+            <button class="key" onclick="handleInput('C')">C</button>
+            <button class="key" onclick="handleInput('V')">V</button>
+            <button class="key" onclick="handleInput('B')">B</button>
+            <button class="key" onclick="handleInput('N')">N</button>
+            <button class="key" onclick="handleInput('M')">M</button>
+            <button class="key wide" onclick="handleBackspace()">지우기</button>
+        </div>
+        <hr style="border: 0.5px solid #3a3a3c; margin: 4px 0;">
+        <!-- 한글 자모음 줄 -->
+        <div class="keyboard-row">
+            <button class="key" onclick="handleInput('ㅂ')">ㅂ</button>
+            <button class="key" onclick="handleInput('ㅈ')">ㅈ</button>
+            <button class="key" onclick="handleInput('ㄷ')">ㄷ</button>
+            <button class="key" onclick="handleInput('ㄱ')">ㄱ</button>
+            <button class="key" onclick="handleInput('ㅅ')">ㅅ</button>
+            <button class="key" onclick="handleInput('ㅛ')">ㅛ</button>
+            <button class="key" onclick="handleInput('ㅕ')">ㅕ</button>
+            <button class="key" onclick="handleInput('ㅑ')">ㅑ</button>
+            <button class="key" onclick="handleInput('ㅐ')">ㅐ</button>
+            <button class="key" onclick="handleInput('ㅔ')">ㅔ</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key" onclick="handleInput('ㅁ')">ㅁ</button>
+            <button class="key" onclick="handleInput('ㄴ')">ㄴ</button>
+            <button class="key" onclick="handleInput('ㅇ')">ㅇ</button>
+            <button class="key" onclick="handleInput('ㄹ')">ㄹ</button>
+            <button class="key" onclick="handleInput('ㅎ')">ㅎ</button>
+            <button class="key" onclick="handleInput('ㅗ')">ㅗ</button>
+            <button class="key" onclick="handleInput('ㅓ')">ㅓ</button>
+            <button class="key" onclick="handleInput('ㅏ')">ㅏ</button>
+            <button class="key" onclick="handleInput('ㅣ')">ㅣ</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key wide" onclick="handleEnter()">입력</button>
+            <button class="key" onclick="handleInput('ㅋ')">ㅋ</button>
+            <button class="key" onclick="handleInput('ㅌ')">ㅌ</button>
+            <button class="key" onclick="handleInput('ㅊ')">ㅊ</button>
+            <button class="key" onclick="handleInput('ㅍ')">ㅍ</button>
+            <button class="key" onclick="handleInput('ㅠ')">ㅠ</button>
+            <button class="key" onclick="handleInput('ㅜ')">ㅜ</button>
+            <button class="key" onclick="handleInput('ㅡ')">ㅡ</button>
+        </div>
+    </div>
 
     <script>
-        // 정답 설정 (한글 또는 영어 5글자 단어)
-        const ANSWER = "APPLE"; // 영어로 테스트하려면 "APPLE", 한글은 "오렌지주스" 등
+        // 정답 설정 (영어 단어 또는 한글 단어 5글자)
+        const ANSWER = "APPLE"; // 영어 정답 예시 ("오렌지주스" 등으로 변경 가능)
         const WORD_LENGTH = 5;
         const MAX_ROWS = 6;
         
@@ -141,8 +212,6 @@
         let boardState = Array(MAX_ROWS).fill("").map(() => Array(WORD_LENGTH).fill(""));
         let isGameOver = false;
         let guessHistory = [];
-
-        let currentLang = 'EN'; // 초기 키보드 모드: 'EN' (영어) 또는 'KO' (한글)
 
         // 한글 오토마타 변수
         let currentCho = -1;
@@ -176,59 +245,6 @@
             board.appendChild(row);
         }
 
-        // 가상 키보드 렌더링 (한/영 전환 반영)
-        function renderKeyboard() {
-            const kb = document.getElementById("keyboard");
-            kb.innerHTML = "";
-
-            let rows = [];
-            if (currentLang === 'EN') {
-                rows = [
-                    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-                    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-                    ['LANG', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
-                ];
-            } else {
-                rows = [
-                    ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'],
-                    ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ'],
-                    ['LANG', 'ENTER', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', 'BACK']
-                ];
-            }
-
-            rows.forEach(rData => {
-                let rDiv = document.createElement("div");
-                rDiv.className = "keyboard-row";
-                rData.forEach(key => {
-                    let btn = document.createElement("button");
-                    btn.className = "key";
-                    if (key === 'LANG') {
-                        btn.textContent = currentLang === 'EN' ? '한글로' : 'ENG로';
-                        btn.className += " lang-btn wide";
-                        btn.onclick = toggleLanguage;
-                    } else if (key === 'BACK') {
-                        btn.textContent = "지우기";
-                        btn.className += " wide";
-                        btn.onclick = handleBackspace;
-                    } else if (key === 'ENTER') {
-                        btn.textContent = "입력";
-                        btn.className += " wide";
-                        btn.onclick = handleEnter;
-                    } else {
-                        btn.textContent = key;
-                        btn.onclick = () => handleVirtualInput(key);
-                    }
-                    rDiv.appendChild(btn);
-                });
-                kb.appendChild(rDiv);
-            });
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'EN' ? 'KO' : 'EN';
-            renderKeyboard();
-        }
-
         function getCombinedKorean() {
             if (currentCho !== -1 && currentJung === -1 && currentJong === -1) return CHOSUNG[currentCho];
             if (currentCho === -1 && currentJung !== -1 && currentJong === -1) return JUNGSUNG[currentJung];
@@ -253,12 +269,16 @@
             }
         }
 
-        // 가상 키보드 클릭 입력 처리
-        function handleVirtualInput(char) {
+        // 입력 통합 처리 (영어 알파벳 또는 한글 자모음)
+        function handleInput(char) {
             if (isGameOver) return;
 
-            // 영어 모드일 때
+            // 영어 알파벳 입력 시
             if (/^[A-Z]$/.test(char)) {
+                // 한글 조합 중이던 게 있다면 먼저 확정
+                if (currentCho !== -1 || currentJung !== -1) {
+                    commitLetter();
+                }
                 if (currentTile >= WORD_LENGTH) return;
                 boardState[currentRow][currentTile] = char;
                 let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
@@ -268,7 +288,7 @@
                 return;
             }
 
-            // 한글 모드일 때 (오토마타)
+            // 한글 자모음 입력 시 오토마타 동작
             if (CHO_MAP[char] !== undefined || JUNG_MAP[char] !== undefined || JONG_MAP[char] !== undefined) {
                 if (currentCho === -1 && currentJung === -1 && currentJong === -1) {
                     if (CHO_MAP[char] !== undefined) currentCho = CHO_MAP[char];
@@ -414,27 +434,13 @@
         }
 
         // 물리 키보드 대응
-        const koreanMap = {
-            'q': 'ㅂ', 'Q': 'ㅃ', 'w': 'ㅈ', 'W': 'ㅉ', 'e': 'ㄷ', 'E': 'ㄸ', 'r': 'ㄱ', 'R': 'ㄲ', 't': 'ㅅ', 'T': 'ㅆ',
-            'y': 'ㅛ', 'u': 'ㅕ', 'i': 'ㅑ', 'o': 'ㅐ', 'O': 'ㅒ', 'p': 'ㅔ', 'P': 'ㅖ',
-            'a': 'ㅁ', 's': 'ㄴ', 'd': 'ㅇ', 'f': 'ㄹ', 'g': 'ㅎ', 'h': 'ㅗ', 'j': 'ㅓ', 'k': 'ㅏ', 'l': 'ㅣ',
-            'z': 'ㅋ', 'x': 'ㅌ', 'c': 'ㅊ', 'v': 'ㅍ', 'b': 'ㅠ', 'n': 'ㅜ', 'm': 'ㅡ'
-        };
-
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 handleEnter();
             } else if (e.key === 'Backspace') {
                 handleBackspace();
             } else if (/^[a-zA-Z]$/.test(e.key)) {
-                // 물리 키보드로 영어 입력 시
-                if (currentLang === 'EN') {
-                    handleVirtualInput(e.key.toUpperCase());
-                } else {
-                    // 한글 모드일 때 영문 자판 매핑 적용
-                    let mapped = koreanMap[e.key.toLowerCase()];
-                    if (mapped) handleVirtualInput(mapped);
-                }
+                handleInput(e.key.toUpperCase());
             }
         });
 
@@ -467,9 +473,6 @@
                 alert("결과가 클립보드에 복사되었습니다!");
             });
         }
-
-        // 최초 실행 시 키보드 렌더링
-        renderKeyboard();
     </script>
 </body>
 </html>
