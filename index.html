@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>미니 워들 게임</title>
+    <title>미니 워들 게임 (한/영 겸용)</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -50,6 +50,7 @@
             font-weight: bold;
             user-select: none;
             background-color: #121213;
+            text-transform: uppercase;
         }
         .tile.filled { border-color: #565758; }
         .tile.correct { background-color: #538d4e; border-color: #538d4e; color: white; }
@@ -114,7 +115,7 @@
 
     <header>
         <h1>WORDLE</h1>
-        <div id="sub-title">5글자 단어를 맞추세요</div>
+        <div id="sub-title">5글자 단어를 맞추세요 (한글/영문 지원)</div>
     </header>
 
     <div id="message"></div>
@@ -125,46 +126,47 @@
         <button id="share-btn" onclick="shareResult()">결과 복사하기 (SNS 공유)</button>
     </div>
 
-    <!-- 가상 키보드 (자모음 입력 시 실시간 한글 조합) -->
+    <!-- 가상 키보드 -->
     <div id="keyboard">
         <div class="keyboard-row">
-            <button class="key" onclick="inputJamo('ㅂ')">ㅂ</button>
-            <button class="key" onclick="inputJamo('ㅈ')">ㅈ</button>
-            <button class="key" onclick="inputJamo('ㄷ')">ㄷ</button>
-            <button class="key" onclick="inputJamo('ㄱ')">ㄱ</button>
-            <button class="key" onclick="inputJamo('ㅅ')">ㅅ</button>
-            <button class="key" onclick="inputJamo('ㅛ')">ㅛ</button>
-            <button class="key" onclick="inputJamo('ㅕ')">ㅕ</button>
-            <button class="key" onclick="inputJamo('ㅑ')">ㅑ</button>
-            <button class="key" onclick="inputJamo('ㅐ')">ㅐ</button>
-            <button class="key" onclick="inputJamo('ㅔ')">ㅔ</button>
+            <button class="key" onclick="inputChar('ㅂ')">ㅂ</button>
+            <button class="key" onclick="inputChar('ㅈ')">ㅈ</button>
+            <button class="key" onclick="inputChar('ㄷ')">ㄷ</button>
+            <button class="key" onclick="inputChar('ㄱ')">ㄱ</button>
+            <button class="key" onclick="inputChar('ㅅ')">ㅅ</button>
+            <button class="key" onclick="inputChar('ㅛ')">ㅛ</button>
+            <button class="key" onclick="inputChar('ㅕ')">ㅕ</button>
+            <button class="key" onclick="inputChar('ㅑ')">ㅑ</button>
+            <button class="key" onclick="inputChar('ㅐ')">ㅐ</button>
+            <button class="key" onclick="inputChar('ㅔ')">ㅔ</button>
         </div>
         <div class="keyboard-row">
-            <button class="key" onclick="inputJamo('ㅁ')">ㅁ</button>
-            <button class="key" onclick="inputJamo('ㄴ')">ㄴ</button>
-            <button class="key" onclick="inputJamo('ㅇ')">ㅇ</button>
-            <button class="key" onclick="inputJamo('ㄹ')">ㄹ</button>
-            <button class="key" onclick="inputJamo('ㅎ')">ㅎ</button>
-            <button class="key" onclick="inputJamo('ㅗ')">ㅗ</button>
-            <button class="key" onclick="inputJamo('ㅓ')">ㅓ</button>
-            <button class="key" onclick="inputJamo('ㅏ')">ㅏ</button>
-            <button class="key" onclick="inputJamo('ㅣ')">ㅣ</button>
+            <button class="key" onclick="inputChar('ㅁ')">ㅁ</button>
+            <button class="key" onclick="inputChar('ㄴ')">ㄴ</button>
+            <button class="key" onclick="inputChar('ㅇ')">ㅇ</button>
+            <button class="key" onclick="inputChar('ㄹ')">ㄹ</button>
+            <button class="key" onclick="inputChar('ㅎ')">ㅎ</button>
+            <button class="key" onclick="inputChar('ㅗ')">ㅗ</button>
+            <button class="key" onclick="inputChar('ㅓ')">ㅓ</button>
+            <button class="key" onclick="inputChar('ㅏ')">ㅏ</button>
+            <button class="key" onclick="inputChar('ㅣ')">ㅣ</button>
         </div>
         <div class="keyboard-row">
             <button class="key wide" onclick="handleEnter()">입력</button>
-            <button class="key" onclick="inputJamo('ㅋ')">ㅋ</button>
-            <button class="key" onclick="inputJamo('ㅌ')">ㅌ</button>
-            <button class="key" onclick="inputJamo('ㅊ')">ㅊ</button>
-            <button class="key" onclick="inputJamo('ㅍ')">ㅍ</button>
-            <button class="key" onclick="inputJamo('ㅠ')">ㅠ</button>
-            <button class="key" onclick="inputJamo('ㅜ')">ㅜ</button>
-            <button class="key" onclick="inputJamo('ㅡ')">ㅡ</button>
+            <button class="key" onclick="inputChar('ㅋ')">ㅋ</button>
+            <button class="key" onclick="inputChar('ㅌ')">ㅌ</button>
+            <button class="key" onclick="inputChar('ㅊ')">ㅊ</button>
+            <button class="key" onclick="inputChar('ㅍ')">ㅍ</button>
+            <button class="key" onclick="inputChar('ㅠ')">ㅠ</button>
+            <button class="key" onclick="inputChar('ㅜ')">ㅜ</button>
+            <button class="key" onclick="inputChar('ㅡ')">ㅡ</button>
             <button class="key wide" onclick="handleBackspace()">지우기</button>
         </div>
     </div>
 
     <script>
-        const ANSWER = "오렌지주스"; // 5글자 정답
+        // 정답 설정 (한글 5글자 또는 영어 5글자 선택 가능)
+        const ANSWER = "오렌지주스"; 
         const WORD_LENGTH = 5;
         const MAX_ROWS = 6;
         
@@ -174,7 +176,7 @@
         let isGameOver = false;
         let guessHistory = [];
 
-        // 한글 오토마타 (자음+모음 조합 엔진) 상태 변수
+        // 한글 오토마타 변수
         let currentCho = -1;
         let currentJung = -1;
         let currentJong = -1;
@@ -186,8 +188,6 @@
         const CHO_MAP = {'ㄱ':0, 'ㄲ':1, 'ㄴ':2, 'ㄷ':3, 'ㄸ':4, 'ㄹ':5, 'ㅁ':6, 'ㅂ':7, 'ㅃ':8, 'ㅅ':9, 'ㅆ':10, 'ㅇ':11, 'ㅈ':12, 'ㅉ':13, 'ㅊ':14, 'ㅋ':15, 'ㅌ':16, 'ㅍ':17, 'ㅎ':18};
         const JUNG_MAP = {'ㅏ':0, 'ㅐ':1, 'ㅑ':2, 'ㅒ':3, 'ㅓ':4, 'ㅔ':5, 'ㅕ':6, 'ㅖ':7, 'ㅗ':8, 'ㅛ':12, 'ㅜ':13, 'ㅠ':17, 'ㅡ':18, 'ㅣ':20};
         const JONG_MAP = {'ㄱ':1, 'ㄴ':4, 'ㄷ':7, 'ㄹ':8, 'ㅁ':16, 'ㅂ':17, 'ㅅ':19, 'ㅇ':21, 'ㅈ':22, 'ㅊ':23, 'ㅋ':24, 'ㅌ':25, 'ㅍ':26, 'ㅎ':27};
-
-        // 복합 모음 조합표
         const JUNG_COMBO = {
             'ㅗ': {'ㅏ': 'ㅘ', 'ㅐ': 'ㅙ', 'ㅣ': 'ㅚ'},
             'ㅜ': {'ㅓ': 'ㅝ', 'ㅔ': 'ㅞ', 'ㅣ': 'ㅟ'},
@@ -208,28 +208,20 @@
             board.appendChild(row);
         }
 
-        // 완성된 글자 계산
-        function getCombinedChar() {
-            if (currentCho !== -1 && currentJung === -1 && currentJong === -1) {
-                return CHOSUNG[currentCho];
-            }
-            if (currentCho === -1 && currentJung !== -1 && currentJong === -1) {
-                return JUNGSUNG[currentJung];
-            }
+        function getCombinedKorean() {
+            if (currentCho !== -1 && currentJung === -1 && currentJong === -1) return CHOSUNG[currentCho];
+            if (currentCho === -1 && currentJung !== -1 && currentJong === -1) return JUNGSUNG[currentJung];
             if (currentCho !== -1 && currentJung !== -1) {
-                let choIdx = currentCho;
-                let jungIdx = currentJung;
-                let jongIdx = currentJong === -1 ? 0 : currentJong;
-                let code = 44032 + (choIdx * 588) + (jungIdx * 28) + jongIdx;
+                let code = 44032 + (currentCho * 588) + (currentJung * 28) + (currentJong === -1 ? 0 : currentJong);
                 return String.fromCharCode(code);
             }
             return "";
         }
 
-        function updateCurrentTileUI() {
+        function updateUI() {
             if (currentTile >= WORD_LENGTH) return;
             let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
-            let text = getCombinedChar();
+            let text = getCombinedKorean();
             tile.textContent = text;
             if (text !== "") {
                 tile.classList.add("filled");
@@ -240,80 +232,71 @@
             }
         }
 
-        // 자모음 입력 처리 (오토마타)
-        function inputJamo(char) {
+        // 공통 입력 처리기 (한글 자모음 또는 영어 알파벳)
+        function inputChar(char) {
             if (isGameOver) return;
 
-            // 1. 초성 입력 단계
-            if (currentCho === -1 && currentJung === -1 && currentJong === -1) {
-                if (CHO_MAP[char] !== undefined) {
-                    currentCho = CHO_MAP[char];
-                    updateCurrentTileUI();
-                } else if (JUNG_MAP[char] !== undefined) {
-                    currentJung = JUNG_MAP[char];
-                    updateCurrentTileUI();
-                }
-            } 
-            // 2. 초성만 있는 상태
-            else if (currentCho !== -1 && currentJung === -1 && currentJong === -1) {
-                if (JUNG_MAP[char] !== undefined) {
-                    currentJung = JUNG_MAP[char];
-                    updateCurrentTileUI();
-                } else if (CHO_MAP[char] !== undefined) {
-                    // 글자 완성 후 다음 칸으로 이동하고 새 초성 시작
-                    commitLetter();
-                    currentCho = CHO_MAP[char];
-                    updateCurrentTileUI();
-                }
+            // 영어 입력 처리 (A-Z)
+            if (/^[a-zA-Z]$/.test(char)) {
+                if (currentTile >= WORD_LENGTH) return;
+                let upperChar = char.toUpperCase();
+                boardState[currentRow][currentTile] = upperChar;
+                let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
+                tile.textContent = upperChar;
+                tile.classList.add("filled");
+                currentTile++;
+                return;
             }
-            // 3. 초성 + 중성 있는 상태
-            else if (currentCho !== -1 && currentJung !== -1 && currentJong === -1) {
-                let jungChar = JUNGSUNG[currentJung];
-                if (JUNG_COMBO[jungChar] && JUNG_COMBO[jungChar][char]) {
-                    // 복합 모음 결합 (예: ㅗ + ㅏ = ㅘ)
-                    let combined = JUNG_COMBO[jungChar][char];
-                    currentJung = JUNG_MAP[combined];
-                    updateCurrentTileUI();
-                } else if (JONG_MAP[char] !== undefined) {
-                    // 받침(종성) 입력
-                    currentJong = JONG_MAP[char];
-                    updateCurrentTileUI();
-                } else if (CHO_MAP[char] !== undefined) {
-                    // 기존 글자 확정 후 새 글자 초성
-                    commitLetter();
-                    currentCho = CHO_MAP[char];
-                    updateCurrentTileUI();
-                } else if (JUNG_MAP[char] !== undefined) {
-                    // 모음이 또 들어오면 현재 글자 확정 후 새 글자 중성
-                    commitLetter();
-                    currentJung = JUNG_MAP[char];
-                    updateCurrentTileUI();
-                }
-            }
-            // 4. 초성 + 중성 + 종성 있는 상태
-            else if (currentCho !== -1 && currentJung !== -1 && currentJong !== -1) {
-                if (CHO_MAP[char] !== undefined) {
-                    commitLetter();
-                    currentCho = CHO_MAP[char];
-                    updateCurrentTileUI();
-                } else if (JUNG_MAP[char] !== undefined) {
-                    // 종성이 다음 글자의 초성으로 넘어가는 처리
-                    let jongChar = JONGSUNG[currentJong];
-                    // 간단 분리: 종성을 끊고 새 글자 중성으로
-                    currentJong = -1;
-                    commitLetter();
-                    currentJung = JUNG_MAP[char];
-                    updateCurrentTileUI();
-                } else {
-                    commitLetter();
-                    inputJamo(char);
+
+            // 한글 자모음 오토마타 처리
+            if (CHO_MAP[char] !== undefined || JUNG_MAP[char] !== undefined || JONG_MAP[char] !== undefined) {
+                if (currentCho === -1 && currentJung === -1 && currentJong === -1) {
+                    if (CHO_MAP[char] !== undefined) currentCho = CHO_MAP[char];
+                    else if (JUNG_MAP[char] !== undefined) currentJung = JUNG_MAP[char];
+                    updateUI();
+                } else if (currentCho !== -1 && currentJung === -1 && currentJong === -1) {
+                    if (JUNG_MAP[char] !== undefined) {
+                        currentJung = JUNG_MAP[char];
+                        updateUI();
+                    } else if (CHO_MAP[char] !== undefined) {
+                        commitLetter();
+                        currentCho = CHO_MAP[char];
+                        updateUI();
+                    }
+                } else if (currentCho !== -1 && currentJung !== -1 && currentJong === -1) {
+                    let jungChar = JUNGSUNG[currentJung];
+                    if (JUNG_COMBO[jungChar] && JUNG_COMBO[jungChar][char]) {
+                        currentJung = JUNG_MAP[JUNG_COMBO[jungChar][char]];
+                        updateUI();
+                    } else if (JONG_MAP[char] !== undefined) {
+                        currentJong = JONG_MAP[char];
+                        updateUI();
+                    } else if (CHO_MAP[char] !== undefined) {
+                        commitLetter();
+                        currentCho = CHO_MAP[char];
+                        updateUI();
+                    } else if (JUNG_MAP[char] !== undefined) {
+                        commitLetter();
+                        currentJung = JUNG_MAP[char];
+                        updateUI();
+                    }
+                } else if (currentCho !== -1 && currentJung !== -1 && currentJong !== -1) {
+                    if (CHO_MAP[char] !== undefined) {
+                        commitLetter();
+                        currentCho = CHO_MAP[char];
+                        updateUI();
+                    } else if (JUNG_MAP[char] !== undefined) {
+                        currentJong = -1;
+                        commitLetter();
+                        currentJung = JUNG_MAP[char];
+                        updateUI();
+                    }
                 }
             }
         }
 
-        // 현재 한 글자 완성 확정
         function commitLetter() {
-            let text = getCombinedChar();
+            let text = getCombinedKorean();
             if (text !== "") {
                 boardState[currentRow][currentTile] = text;
                 currentTile++;
@@ -323,49 +306,36 @@
             }
         }
 
-        // 지우기 버튼
         function handleBackspace() {
             if (isGameOver) return;
 
-            // 현재 조합 중인 글자가 있다면 자모음 단위로 지우기
-            if (currentJong !== -1) {
-                currentJong = -1;
-                updateCurrentTileUI();
-                return;
-            }
-            if (currentJung !== -1) {
-                currentJung = -1;
-                updateCurrentTileUI();
-                return;
-            }
-            if (currentCho !== -1) {
-                currentCho = -1;
-                updateCurrentTileUI();
+            // 영어 입력 칸 지우기
+            let tile = document.getElementById(`tile-${currentRow}-${currentTile > 0 ? currentTile - 1 : 0}`);
+            if (currentCho === -1 && currentJung === -1 && currentJong === -1) {
+                if (currentTile > 0) {
+                    currentTile--;
+                    boardState[currentRow][currentTile] = "";
+                    let t = document.getElementById(`tile-${currentRow}-${currentTile}`);
+                    t.textContent = "";
+                    t.classList.remove("filled");
+                }
                 return;
             }
 
-            // 이미 칸이 넘어갔다면 이전 칸으로 돌아가서 지우기
-            if (currentTile > 0) {
-                currentTile--;
-                boardState[currentRow][currentTile] = "";
-                let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
-                tile.textContent = "";
-                tile.classList.remove("filled");
-            }
+            // 한글 자모음 조합 지우기
+            if (currentJong !== -1) { currentJong = -1; updateUI(); }
+            else if (currentJung !== -1) { currentJung = -1; updateUI(); }
+            else if (currentCho !== -1) { currentCho = -1; updateUI(); }
         }
 
-        // 입력(Enter) 버튼
         function handleEnter() {
             if (isGameOver) return;
             
-            // 마지막 글자가 조합 중이면 확정 처리
-            let text = getCombinedChar();
+            let text = getCombinedKorean();
             if (text !== "" && currentTile < WORD_LENGTH) {
                 boardState[currentRow][currentTile] = text;
                 currentTile++;
-                currentCho = -1;
-                currentJung = -1;
-                currentJong = -1;
+                currentCho = -1; currentJung = -1; currentJong = -1;
             }
 
             if (currentTile < WORD_LENGTH) {
@@ -408,9 +378,7 @@
 
             currentRow++;
             currentTile = 0;
-            currentCho = -1;
-            currentJung = -1;
-            currentJong = -1;
+            currentCho = -1; currentJung = -1; currentJong = -1;
 
             if (currentRow === MAX_ROWS) {
                 showMessage(`게임 오버! 정답은 [ ${ANSWER} ] 입니다.`);
@@ -430,15 +398,12 @@
             document.getElementById("share-container").style.display = "block";
         }
 
-        // 물리 키보드 대응 (영어 자판 매핑 포함)
+        // 물리 키보드 입력 대응 (영어 알파벳 및 한글 자모음 매핑)
         const koreanMap = {
             'q': 'ㅂ', 'Q': 'ㅃ', 'w': 'ㅈ', 'W': 'ㅉ', 'e': 'ㄷ', 'E': 'ㄸ', 'r': 'ㄱ', 'R': 'ㄲ', 't': 'ㅅ', 'T': 'ㅆ',
             'y': 'ㅛ', 'u': 'ㅕ', 'i': 'ㅑ', 'o': 'ㅐ', 'O': 'ㅒ', 'p': 'ㅔ', 'P': 'ㅖ',
             'a': 'ㅁ', 's': 'ㄴ', 'd': 'ㅇ', 'f': 'ㄹ', 'g': 'ㅎ', 'h': 'ㅗ', 'j': 'ㅓ', 'k': 'ㅏ', 'l': 'ㅣ',
-            'z': 'ㅋ', 'x': 'ㅌ', 'c': 'ㅊ', 'v': 'ㅍ', 'b': 'ㅠ', 'n': 'ㅜ', 'm': 'ㅡ',
-            'ㅂ': 'ㅂ', 'ㅈ': 'ㅈ', 'ㄷ': 'ㄷ', 'ㄱ': 'ㄱ', 'ㅅ': 'ㅅ', 'ㅛ': 'ㅛ', 'ㅕ': 'ㅕ', 'ㅑ': 'ㅑ', 'ㅐ': 'ㅐ', 'ㅔ': 'ㅔ',
-            'ㅁ': 'ㅁ', 'ㄴ': 'ㄴ', 'ㅇ': 'ㅇ', 'ㄹ': 'ㄹ', 'ㅎ': 'ㅎ', 'ㅗ': 'ㅗ', 'ㅓ': 'ㅓ', 'ㅏ': 'ㅏ', 'ㅣ': 'ㅣ',
-            'ㅋ': 'ㅋ', 'ㅌ': 'ㅌ', 'ㅊ': 'ㅊ', 'ㅍ': 'ㅍ', 'ㅠ': 'ㅠ', 'ㅜ': 'ㅜ', 'ㅡ': 'ㅡ'
+            'z': 'ㅋ', 'x': 'ㅌ', 'c': 'ㅊ', 'v': 'ㅍ', 'b': 'ㅠ', 'n': 'ㅜ', 'm': 'ㅡ'
         };
 
         window.addEventListener('keydown', (e) => {
@@ -447,7 +412,9 @@
             } else if (e.key === 'Backspace') {
                 handleBackspace();
             } else if (koreanMap[e.key]) {
-                inputJamo(koreanMap[e.key]);
+                inputChar(koreanMap[e.key]);
+            } else if (/^[a-zA-Z]$/.test(e.key)) {
+                inputChar(e.key);
             }
         });
 
