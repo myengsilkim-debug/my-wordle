@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>미니 워들 게임 (한/영 겸용)</title>
+    <title>미니 워들 게임 (한/영 전환 가능)</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -81,6 +81,7 @@
             user-select: none;
         }
         button.key.wide { flex: 1.5; }
+        button.key.lang-btn { background-color: #565758; color: #f5f6f8; }
 
         #message {
             position: fixed;
@@ -115,7 +116,7 @@
 
     <header>
         <h1>WORDLE</h1>
-        <div id="sub-title">5글자 단어를 맞추세요 (한글/영문 지원)</div>
+        <div id="sub-title">5글자 단어를 맞추세요 (한글/영문 겸용)</div>
     </header>
 
     <div id="message"></div>
@@ -126,47 +127,12 @@
         <button id="share-btn" onclick="shareResult()">결과 복사하기 (SNS 공유)</button>
     </div>
 
-    <!-- 가상 키보드 -->
-    <div id="keyboard">
-        <div class="keyboard-row">
-            <button class="key" onclick="inputChar('ㅂ')">ㅂ</button>
-            <button class="key" onclick="inputChar('ㅈ')">ㅈ</button>
-            <button class="key" onclick="inputChar('ㄷ')">ㄷ</button>
-            <button class="key" onclick="inputChar('ㄱ')">ㄱ</button>
-            <button class="key" onclick="inputChar('ㅅ')">ㅅ</button>
-            <button class="key" onclick="inputChar('ㅛ')">ㅛ</button>
-            <button class="key" onclick="inputChar('ㅕ')">ㅕ</button>
-            <button class="key" onclick="inputChar('ㅑ')">ㅑ</button>
-            <button class="key" onclick="inputChar('ㅐ')">ㅐ</button>
-            <button class="key" onclick="inputChar('ㅔ')">ㅔ</button>
-        </div>
-        <div class="keyboard-row">
-            <button class="key" onclick="inputChar('ㅁ')">ㅁ</button>
-            <button class="key" onclick="inputChar('ㄴ')">ㄴ</button>
-            <button class="key" onclick="inputChar('ㅇ')">ㅇ</button>
-            <button class="key" onclick="inputChar('ㄹ')">ㄹ</button>
-            <button class="key" onclick="inputChar('ㅎ')">ㅎ</button>
-            <button class="key" onclick="inputChar('ㅗ')">ㅗ</button>
-            <button class="key" onclick="inputChar('ㅓ')">ㅓ</button>
-            <button class="key" onclick="inputChar('ㅏ')">ㅏ</button>
-            <button class="key" onclick="inputChar('ㅣ')">ㅣ</button>
-        </div>
-        <div class="keyboard-row">
-            <button class="key wide" onclick="handleEnter()">입력</button>
-            <button class="key" onclick="inputChar('ㅋ')">ㅋ</button>
-            <button class="key" onclick="inputChar('ㅌ')">ㅌ</button>
-            <button class="key" onclick="inputChar('ㅊ')">ㅊ</button>
-            <button class="key" onclick="inputChar('ㅍ')">ㅍ</button>
-            <button class="key" onclick="inputChar('ㅠ')">ㅠ</button>
-            <button class="key" onclick="inputChar('ㅜ')">ㅜ</button>
-            <button class="key" onclick="inputChar('ㅡ')">ㅡ</button>
-            <button class="key wide" onclick="handleBackspace()">지우기</button>
-        </div>
-    </div>
+    <!-- 가상 키보드 영역 (동적으로 한/영 변환됨) -->
+    <div id="keyboard"></div>
 
     <script>
-        // 정답 설정 (한글 5글자 또는 영어 5글자 선택 가능)
-        const ANSWER = "오렌지주스"; 
+        // 정답 설정 (한글 또는 영어 5글자 단어)
+        const ANSWER = "APPLE"; // 영어로 테스트하려면 "APPLE", 한글은 "오렌지주스" 등
         const WORD_LENGTH = 5;
         const MAX_ROWS = 6;
         
@@ -175,6 +141,8 @@
         let boardState = Array(MAX_ROWS).fill("").map(() => Array(WORD_LENGTH).fill(""));
         let isGameOver = false;
         let guessHistory = [];
+
+        let currentLang = 'EN'; // 초기 키보드 모드: 'EN' (영어) 또는 'KO' (한글)
 
         // 한글 오토마타 변수
         let currentCho = -1;
@@ -208,6 +176,59 @@
             board.appendChild(row);
         }
 
+        // 가상 키보드 렌더링 (한/영 전환 반영)
+        function renderKeyboard() {
+            const kb = document.getElementById("keyboard");
+            kb.innerHTML = "";
+
+            let rows = [];
+            if (currentLang === 'EN') {
+                rows = [
+                    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+                    ['LANG', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
+                ];
+            } else {
+                rows = [
+                    ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'],
+                    ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ'],
+                    ['LANG', 'ENTER', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', 'BACK']
+                ];
+            }
+
+            rows.forEach(rData => {
+                let rDiv = document.createElement("div");
+                rDiv.className = "keyboard-row";
+                rData.forEach(key => {
+                    let btn = document.createElement("button");
+                    btn.className = "key";
+                    if (key === 'LANG') {
+                        btn.textContent = currentLang === 'EN' ? '한글로' : 'ENG로';
+                        btn.className += " lang-btn wide";
+                        btn.onclick = toggleLanguage;
+                    } else if (key === 'BACK') {
+                        btn.textContent = "지우기";
+                        btn.className += " wide";
+                        btn.onclick = handleBackspace;
+                    } else if (key === 'ENTER') {
+                        btn.textContent = "입력";
+                        btn.className += " wide";
+                        btn.onclick = handleEnter;
+                    } else {
+                        btn.textContent = key;
+                        btn.onclick = () => handleVirtualInput(key);
+                    }
+                    rDiv.appendChild(btn);
+                });
+                kb.appendChild(rDiv);
+            });
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'EN' ? 'KO' : 'EN';
+            renderKeyboard();
+        }
+
         function getCombinedKorean() {
             if (currentCho !== -1 && currentJung === -1 && currentJong === -1) return CHOSUNG[currentCho];
             if (currentCho === -1 && currentJung !== -1 && currentJong === -1) return JUNGSUNG[currentJung];
@@ -232,23 +253,22 @@
             }
         }
 
-        // 공통 입력 처리기 (한글 자모음 또는 영어 알파벳)
-        function inputChar(char) {
+        // 가상 키보드 클릭 입력 처리
+        function handleVirtualInput(char) {
             if (isGameOver) return;
 
-            // 영어 입력 처리 (A-Z)
-            if (/^[a-zA-Z]$/.test(char)) {
+            // 영어 모드일 때
+            if (/^[A-Z]$/.test(char)) {
                 if (currentTile >= WORD_LENGTH) return;
-                let upperChar = char.toUpperCase();
-                boardState[currentRow][currentTile] = upperChar;
+                boardState[currentRow][currentTile] = char;
                 let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
-                tile.textContent = upperChar;
+                tile.textContent = char;
                 tile.classList.add("filled");
                 currentTile++;
                 return;
             }
 
-            // 한글 자모음 오토마타 처리
+            // 한글 모드일 때 (오토마타)
             if (CHO_MAP[char] !== undefined || JUNG_MAP[char] !== undefined || JONG_MAP[char] !== undefined) {
                 if (currentCho === -1 && currentJung === -1 && currentJong === -1) {
                     if (CHO_MAP[char] !== undefined) currentCho = CHO_MAP[char];
@@ -300,17 +320,13 @@
             if (text !== "") {
                 boardState[currentRow][currentTile] = text;
                 currentTile++;
-                currentCho = -1;
-                currentJung = -1;
-                currentJong = -1;
+                currentCho = -1; currentJung = -1; currentJong = -1;
             }
         }
 
         function handleBackspace() {
             if (isGameOver) return;
 
-            // 영어 입력 칸 지우기
-            let tile = document.getElementById(`tile-${currentRow}-${currentTile > 0 ? currentTile - 1 : 0}`);
             if (currentCho === -1 && currentJung === -1 && currentJong === -1) {
                 if (currentTile > 0) {
                     currentTile--;
@@ -322,7 +338,6 @@
                 return;
             }
 
-            // 한글 자모음 조합 지우기
             if (currentJong !== -1) { currentJong = -1; updateUI(); }
             else if (currentJung !== -1) { currentJung = -1; updateUI(); }
             else if (currentCho !== -1) { currentCho = -1; updateUI(); }
@@ -398,7 +413,7 @@
             document.getElementById("share-container").style.display = "block";
         }
 
-        // 물리 키보드 입력 대응 (영어 알파벳 및 한글 자모음 매핑)
+        // 물리 키보드 대응
         const koreanMap = {
             'q': 'ㅂ', 'Q': 'ㅃ', 'w': 'ㅈ', 'W': 'ㅉ', 'e': 'ㄷ', 'E': 'ㄸ', 'r': 'ㄱ', 'R': 'ㄲ', 't': 'ㅅ', 'T': 'ㅆ',
             'y': 'ㅛ', 'u': 'ㅕ', 'i': 'ㅑ', 'o': 'ㅐ', 'O': 'ㅒ', 'p': 'ㅔ', 'P': 'ㅖ',
@@ -411,10 +426,15 @@
                 handleEnter();
             } else if (e.key === 'Backspace') {
                 handleBackspace();
-            } else if (koreanMap[e.key]) {
-                inputChar(koreanMap[e.key]);
             } else if (/^[a-zA-Z]$/.test(e.key)) {
-                inputChar(e.key);
+                // 물리 키보드로 영어 입력 시
+                if (currentLang === 'EN') {
+                    handleVirtualInput(e.key.toUpperCase());
+                } else {
+                    // 한글 모드일 때 영문 자판 매핑 적용
+                    let mapped = koreanMap[e.key.toLowerCase()];
+                    if (mapped) handleVirtualInput(mapped);
+                }
             }
         });
 
@@ -447,6 +467,9 @@
                 alert("결과가 클립보드에 복사되었습니다!");
             });
         }
+
+        // 최초 실행 시 키보드 렌더링
+        renderKeyboard();
     </script>
 </body>
 </html>
