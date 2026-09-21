@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미니 워들 게임</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121213;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        header {
+            text-align: center;
+            border-bottom: 1px solid #3a3a3c;
+            width: 100%;
+            max-width: 500px;
+            padding-bottom: 10px;
+        }
+        h1 { margin: 5px 0; font-size: 24px; letter-spacing: 2px; }
+        
+        #board {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            grid-gap: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-gap: 5px;
+        }
+        .tile {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #3a3a3c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            user-select: none;
+            background-color: #121213;
+        }
+        .tile.filled { border-color: #565758; }
+        .tile.correct { background-color: #538d4e; border-color: #538d4e; color: white; }
+        .tile.present { background-color: #b59f3b; border-color: #b59f3b; color: white; }
+        .tile.absent { background-color: #3a3a3c; border-color: #3a3a3c; color: white; }
+
+        #keyboard {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        button.key {
+            background-color: #818384;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 14px 0;
+            flex: 1;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+        button.key.wide { flex: 1.5; }
+        button.key.correct { background-color: #538d4e; }
+        button.key.present { background-color: #b59f3b; }
+        button.key.absent { background-color: #3a3a3c; }
+
+        #message {
+            position: fixed;
+            top: 60px;
+            background-color: white;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: none;
+            z-index: 100;
+        }
+        
+        #share-container {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+        #share-btn {
+            background-color: #538d4e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>WORDLE</h1>
+        <div id="sub-title">5글자 단어를 맞추세요</div>
+    </header>
+
+    <div id="message"></div>
+
+    <div id="board"></div>
+
+    <div id="share-container">
+        <button id="share-btn" onclick="shareResult()">결과 복사하기 (SNS 공유)</button>
+    </div>
+
+    <div id="keyboard">
+        <div class="keyboard-row">
+            <button class="key" onclick="handleChar('ㅂ')">ㅂ</button>
+            <button class="key" onclick="handleChar('ㅈ')">ㅈ</button>
+            <button class="key" onclick="handleChar('ㄷ')">ㄷ</button>
+            <button class="key" onclick="handleChar('ㄱ')">ㄱ</button>
+            <button class="key" onclick="handleChar('ㅅ')">ㅅ</button>
+            <button class="key" onclick="handleChar('ㅛ')">ㅛ</button>
+            <button class="key" onclick="handleChar('ㅕ')">ㅕ</button>
+            <button class="key" onclick="handleChar('ㅑ')">ㅑ</button>
+            <button class="key" onclick="handleChar('ㅐ')">ㅐ</button>
+            <button class="key" onclick="handleChar('ㅔ')">ㅔ</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key" onclick="handleChar('ㅁ')">ㅁ</button>
+            <button class="key" onclick="handleChar('ㄴ')">ㄴ</button>
+            <button class="key" onclick="handleChar('ㅇ')">ㅇ</button>
+            <button class="key" onclick="handleChar('ㄹ')">ㄹ</button>
+            <button class="key" onclick="handleChar('ㅎ')">ㅎ</button>
+            <button class="key" onclick="handleChar('ㅗ')">ㅗ</button>
+            <button class="key" onclick="handleChar('ㅓ')">ㅓ</button>
+            <button class="key" onclick="handleChar('ㅏ')">ㅏ</button>
+            <button class="key" onclick="handleChar('ㅣ')">ㅣ</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key wide" onclick="handleEnter()">입력</button>
+            <button class="key" onclick="handleChar('ㅋ')">ㅋ</button>
+            <button class="key" onclick="handleChar('ㅌ')">ㅌ</button>
+            <button class="key" onclick="handleChar('ㅊ')">ㅊ</button>
+            <button class="key" onclick="handleChar('ㅍ')">ㅍ</button>
+            <button class="key" onclick="handleChar('ㅠ')">ㅠ</button>
+            <button class="key" onclick="handleChar('ㅜ')">ㅜ</button>
+            <button class="key" onclick="handleChar('ㅡ')">ㅡ</button>
+            <button class="key wide" onclick="handleBackspace()">지우기</button>
+        </div>
+    </div>
+
+    <script>
+        const ANSWER = "코딩봇"; // 3글자 정답 (예시) -> 글자 수 조정 가능
+        const WORD_LENGTH = 3;
+        const MAX_ROWS = 6;
+        
+        let currentRow = 0;
+        let currentTile = 0;
+        let boardState = Array(MAX_ROWS).fill("").map(() => Array(WORD_LENGTH).fill(""));
+        let isGameOver = false;
+        let guessHistory = [];
+
+        // 보드판 동적 생성
+        const board = document.getElementById("board");
+        for (let r = 0; r < MAX_ROWS; r++) {
+            let row = document.createElement("div");
+            row.className = "row";
+            for (let c = 0; c < WORD_LENGTH; c++) {
+                let tile = document.createElement("div");
+                tile.className = "tile";
+                tile.id = `tile-${r}-${c}`;
+                row.appendChild(tile);
+            }
+            board.appendChild(row);
+        }
+
+        function handleChar(char) {
+            if (isGameOver || currentTile >= WORD_LENGTH) return;
+            boardState[currentRow][currentTile] = char;
+            let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
+            tile.textContent = char;
+            tile.classList.add("filled");
+            currentTile++;
+        }
+
+        function handleBackspace() {
+            if (isGameOver || currentTile <= 0) return;
+            currentTile--;
+            boardState[currentRow][currentTile] = "";
+            let tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
+            tile.textContent = "";
+            tile.classList.remove("filled");
+        }
+
+        function handleEnter() {
+            if (isGameOver) return;
+            if (currentTile < WORD_LENGTH) {
+                showMessage("단어의 글자 수가 부족합니다!");
+                return;
+            }
+
+            let currentWord = boardState[currentRow].join("");
+            guessHistory.push(currentWord);
+
+            // 색상 판별 로직
+            let answerArr = ANSWER.split("");
+            let rowResult = Array(WORD_LENGTH).fill("absent");
+            
+            // 1차: 정확한 위치 (초록색) 체크
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                if (currentWord[i] === answerArr[i]) {
+                    rowResult[i] = "correct";
+                    answerArr[i] = null;
+                }
+            }
+
+            // 2차: 포함된 글자 (노란색) 체크
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                if (rowResult[i] === "correct") continue;
+                let index = answerArr.indexOf(currentWord[i]);
+                if (index !== -1) {
+                    rowResult[i] = "present";
+                    answerArr[index] = null;
+                }
+            }
+
+            // UI에 색상 반영
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                let tile = document.getElementById(`tile-${currentRow}-${i}`);
+                tile.classList.add(rowResult[i]);
+            }
+
+            // 정답 확인
+            if (currentWord === ANSWER) {
+                showMessage("정답입니다! 🎉");
+                endGame(true);
+                return;
+            }
+
+            currentRow++;
+            currentTile = 0;
+
+            // 게임 오버 확인
+            if (currentRow === MAX_ROWS) {
+                showMessage(`게임 오버! 정답은 [ ${ANSWER} ] 입니다.`);
+                endGame(false);
+            }
+        }
+
+        function showMessage(msg) {
+            let m = document.getElementById("message");
+            m.textContent = msg;
+            m.style.display = "block";
+            setTimeout(() => { m.style.display = "none"; }, 2000);
+        }
+
+        function endGame(won) {
+            isGameOver = true;
+            document.getElementById("share-container").style.display = "block";
+        }
+
+        // SNS 공유 기능 (이모지 결과 텍스트 클립보드 복사)
+        function shareResult() {
+            let resultText = `미니 워들 (${currentRow + (isGameOver && guessHistory[guessHistory.length-1] === ANSWER ? 0 : 6)}/${MAX_ROWS})\n\n`;
+            
+            guessHistory.forEach(word => {
+                let line = "";
+                let answerArr = ANSWER.split("");
+                let tempRow = Array(WORD_LENGTH).fill("⬛");
+                
+                for (let i = 0; i < WORD_LENGTH; i++) {
+                    if (word[i] === answerArr[i]) {
+                        tempRow[i] = "🟩";
+                        answerArr[i] = null;
+                    }
+                }
+                for (let i = 0; i < WORD_LENGTH; i++) {
+                    if (tempRow[i] === "🟩") continue;
+                    let idx = answerArr.indexOf(word[i]);
+                    if (idx !== -1) {
+                        tempRow[i] = "🟨";
+                        answerArr[idx] = null;
+                    }
+                }
+                resultText += tempRow.join("") + "\n";
+            });
+
+            navigator.clipboard.writeText(resultText).then(() => {
+                alert("결과가 클립보드에 복사되었습니다! 친구들에게 공유해보세요.");
+            });
+        }
+    </script>
+</body>
+</html>
